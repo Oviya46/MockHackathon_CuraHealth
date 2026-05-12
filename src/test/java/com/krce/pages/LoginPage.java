@@ -1,5 +1,6 @@
 package com.krce.pages;
 
+import com.krce.utils.WaitUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -10,9 +11,11 @@ import java.time.Duration;
 
 public class LoginPage extends BasePage {
     WebDriver driver;
+    private final WaitUtils wait;
     public LoginPage(WebDriver driver) {
         super(driver);
         this.driver = driver;
+        this.wait = new WaitUtils(driver);
     }
     // Locators
     By makeAppointmentBtn = By.id("btn-make-appointment");
@@ -40,6 +43,9 @@ public class LoginPage extends BasePage {
         enterUsername(username);
         enterPassword(password);
         clickLogin();
+    }
+    public void openLoginPage() {
+        wait.waitForClickable(makeAppointmentBtn).click();
     }
     public String getErrorMessage() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
