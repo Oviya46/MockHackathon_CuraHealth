@@ -7,9 +7,14 @@ import com.krce.utils.DriverFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.*;
+
+import java.time.Duration;
 
 public class AuthenticationTest {
     WebDriver driver;
@@ -39,11 +44,13 @@ public class AuthenticationTest {
         LoginPage loginPage = new LoginPage(driver);
         loginPage.clickMakeAppointment();
         loginPage.login(username, password);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         if(validLogin) {
-            Assert.assertTrue(driver.getCurrentUrl().contains("appointment")
-            );
+            WebElement facilityDropdown = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("combo_facility")));
+            Assert.assertTrue(facilityDropdown.isDisplayed());
         } else {
-            Assert.assertEquals(loginPage.getErrorMessage(), "Login failed! Please ensure the username and password are valid.");
+            WebElement error = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("text-danger")));
+            Assert.assertEquals(error.getText(), "Login failed! Please ensure the username and password are valid.");
         }
     }
     // Verify logout functionality
